@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{ define "index.tmpl" }}
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,7 +6,7 @@
 </head>
 <body>
 <h2> 在学者 </h2>
-{{ range . }}
+{{ range .members }}
 {{ if .IsLab}}
 <li>{{ .Name }} </li>
 {{ end }}
@@ -14,7 +14,7 @@
 
 <h2>帰宅者</h2>
 
-{{ range . }}
+{{ range .members }}
 {{ if eq .IsLab  false}}
 <li>{{ .Name }} </li>
 {{ end }}
@@ -22,3 +22,4 @@
 
 </body>
 </html>
+{{end}}
