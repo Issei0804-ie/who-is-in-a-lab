@@ -20,7 +20,14 @@ curl --header "Content-Type:application/json" \
 http://localhost/register
 ```
 
-3. web(http://localhost) から簡単に在室状況が確認できます．
+3. build と実行を行います．network interface をキャプチャするために sudo で実行しています．
+
+```
+go build -o hoge
+sudo ./hoge
+```
+
+4web(http://localhost) から簡単に在室状況が確認できます．
 
 
 ### 注意
