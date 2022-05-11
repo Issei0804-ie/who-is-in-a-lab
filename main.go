@@ -1,22 +1,23 @@
 package main
 
 import (
-	"awesomeProject/api"
-	"awesomeProject/domain"
 	"encoding/json"
 	"fmt"
+	"github.com/Issei0804-ie/who-is-in-a-lab/api"
+	"github.com/Issei0804-ie/who-is-in-a-lab/domain"
 	"github.com/google/gopacket"
 	"github.com/google/gopacket/layers"
 	"github.com/google/gopacket/pcap"
 	"io/ioutil"
 	"log"
+	"os"
 	"time"
 )
 
 var (
-	device       string = "enp0s31f6"
-	snapshot_len int32  = 1024
-	promiscuous  bool   = false
+	device       string
+	snapshot_len int32 = 1024
+	promiscuous  bool  = false
 	err          error
 	timeout      time.Duration = 1 * time.Second
 	handle       *pcap.Handle
@@ -42,29 +43,29 @@ func initMembers() []domain.Member {
 
 func main() {
 	members := initMembers()
+	device = os.Args[1]
+	if device == "" {
+		log.Fatal("usage: ./who-is-in-a-lab [network interface] \n example: ./who-is-in-a-lab wlan0")
+	}
+	log.Println(fmt.Sprintf("network interface is " + device))
 
-	log.Println("listen now ...")
-	go api.InitAPI(&members)
-	log.Println("finish listen")
-
-	// Open device
 	handle, err = pcap.OpenLive(device, snapshot_len, promiscuous, timeout)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer handle.Close()
 
-	// Use the handle as a packet source to process all packets
+	log.Println("listen now ...")
+	go api.InitAPI(&members)
+	log.Println("finish listen")
+
 	packetSource := gopacket.NewPacketSource(handle, handle.LinkType())
 	for packet := range packetSource.Packets() {
-		// Process packet here
 		printPacketInfo(packet, members)
 	}
 }
 
 func printPacketInfo(packet gopacket.Packet, members []domain.Member) {
-	// Ethernet Packetへキャスト
-	// Let's see if the packet is an ethernet packet
 	ethernetLayer := packet.Layer(layers.LayerTypeEthernet)
 	if ethernetLayer != nil {
 		ethernetPacket, _ := ethernetLayer.(*layers.Ethernet)
@@ -76,7 +77,5 @@ func printPacketInfo(packet gopacket.Packet, members []domain.Member) {
 				}
 			}
 		}
-	} else {
-		fmt.Println("nil")
 	}
 }

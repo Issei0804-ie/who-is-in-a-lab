@@ -1,9 +1,9 @@
 package api
 
 import (
-	"awesomeProject/domain"
 	"encoding/json"
 	"fmt"
+	"github.com/Issei0804-ie/who-is-in-a-lab/domain"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
