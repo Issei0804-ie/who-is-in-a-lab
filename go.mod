@@ -1,4 +1,4 @@
-module awesomeProject
+module github.com/Issei0804-ie/who-is-in-a-lab
 
 go 1.18
 
