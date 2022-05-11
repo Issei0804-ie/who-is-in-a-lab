@@ -9,22 +9,24 @@
 
 ### 使い方
 
-1. main.go でハードコーディングしている `device` に対して適切な network interface を書いてください(mac だと ifconfig , linux だと ip address でいけます)．
+1. キャプチャしたい network interface を調べましょう!(mac だと ifconfig , manjaro だと ip address でいけます)．
 
-2. mac アドレスを登録しましょう． curl からいけます．
+
+2. build と実行を行います．network interface をキャプチャするために sudo で実行しています．
+
+```
+go build -o hoge
+sudo ./hoge [network interface]
+# ex) sudo ./hoge wlan0
+```
+
+3. mac アドレスとHTMLに表示される名前を登録しましょう． curl からいけます．
 
 ```
 curl --header "Content-Type:application/json" \
 --request POST \
 --data '{"name":"issei", "addresses":["ee:ee:ee:ee:ee:ee"]}' \
 http://localhost/register
-```
-
-3. build と実行を行います．network interface をキャプチャするために sudo で実行しています．
-
-```
-go build -o hoge
-sudo ./hoge
 ```
 
 4. web(http://localhost) から簡単に在室状況が確認できます．
