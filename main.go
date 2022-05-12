@@ -34,8 +34,7 @@ func initMembers() []domain.Member {
 		log.Fatal(err)
 	}
 
-	for i, member := range members {
-		fmt.Printf("%v \n", member)
+	for i, _ := range members {
 		members[i].LastLogin = time.Time{}
 	}
 	return members
@@ -43,10 +42,10 @@ func initMembers() []domain.Member {
 
 func main() {
 	members := initMembers()
-	device = os.Args[1]
-	if device == "" {
+	if len(os.Args) == 1 {
 		log.Fatal("usage: ./who-is-in-a-lab [network interface] \n example: ./who-is-in-a-lab wlan0")
 	}
+	device = os.Args[1]
 	log.Println(fmt.Sprintf("network interface is " + device))
 
 	handle, err = pcap.OpenLive(device, snapshot_len, promiscuous, timeout)
@@ -73,7 +72,6 @@ func printPacketInfo(packet gopacket.Packet, members []domain.Member) {
 			for _, address := range member.Addresses {
 				if ethernetPacket.SrcMAC.String() == address {
 					members[i].LastLogin = time.Now()
-					log.Println("packet caught:" + member.Name)
 				}
 			}
 		}

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/Issei0804-ie/who-is-in-a-lab/domain"
 	"github.com/gin-gonic/gin"
+	"html/template"
 	"log"
 	"net/http"
 	"os"
@@ -12,16 +13,44 @@ import (
 
 func InitAPI(members *[]domain.Member) {
 	r := gin.Default()
-	r.LoadHTMLFiles("./index.html")
+	h := `{{ define "index.tmpl" }}
+	<html lang="jp">
+	<head>
+	<meta charset="UTF-8">
+	<title>kono-lab</title>
+	</head>
+	<body>
+	<h2> 在学者 </h2>
+	{{ range .}}
+	{{ if .IsLab}}
+	<li>{{ .Name }} </li>
+	{{ end }}
+	{{ end }}
+
+	<h2>帰宅者</h2>
+
+	{{ range .}}
+	{{ if eq .IsLab  false}}
+	<li>{{ .Name }} </li>
+	{{ end }}
+	{{ end }}
+
+	</body>
+	</html>
+	{{end}}`
 
 	r.GET("/", func(c *gin.Context) {
 		limit := 30
 		for i := 0; i < len(*members); i++ {
 			(*members)[i].SetIsLab(limit)
 		}
-		c.HTML(http.StatusOK, "index.tmpl", gin.H{
-			"members": *members,
-		})
+		t := template.Must(template.New("index.tmpl").Parse(h))
+		err := t.Execute(c.Writer, *members)
+		if err != nil {
+			log.Fatal(err.Error())
+			c.JSON(http.StatusInternalServerError, map[string]string{"message": "server error"})
+			return
+		}
 	})
 
 	r.POST("/register", func(c *gin.Context) {
