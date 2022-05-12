@@ -9,18 +9,24 @@
 
 ### 使い方
 
-1. キャプチャしたい network interface を調べましょう!(mac だと ifconfig , manjaro だと ip address でいけます)．
-
-
-2. build と実行を行います．network interface をキャプチャするために sudo で実行しています．
+1. 設定ファイルを curl で落とします．
 
 ```
-go build -o hoge
-sudo ./hoge [network interface]
-# ex) sudo ./hoge wlan0
+curl "https://raw.githubusercontent.com/Issei0804-ie/who-is-in-a-lab/main/sample-address.json" > address.json
 ```
 
-3. mac アドレスとHTMLに表示される名前を登録しましょう． curl からいけます．
+2. キャプチャしたい network interface を調べましょう!(mac だと ifconfig , manjaro だと ip address でいけます)．
+
+
+3. install と実行を行います．実行時, network interface をキャプチャするために sudo で実行しています．
+
+```
+go install github.com/Issei0804-ie/who-is-in-a-lab@latest
+sudo who-is-in-a-lab [network interface]
+ex) sudo who-is-in-a-lab wlan0
+```
+
+4. HTMLに表示される名前 とmac アドレスを登録しましょう． curl からいけます．
 
 ```
 curl --header "Content-Type:application/json" \
@@ -29,7 +35,7 @@ curl --header "Content-Type:application/json" \
 http://localhost/register
 ```
 
-4. web(http://localhost) から簡単に在室状況が確認できます．
+5. web(http://localhost) から簡単に在室状況が確認できます．
 
 
 ### 注意
