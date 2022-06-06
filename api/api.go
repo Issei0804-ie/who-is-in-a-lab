@@ -1,6 +1,7 @@
 package api
 
 import (
+	_ "embed"
 	"encoding/json"
 	"fmt"
 	"github.com/Issei0804-ie/who-is-in-a-lab/domain"
@@ -11,34 +12,12 @@ import (
 	"os"
 )
 
+//go:embed index.html
+var HTML []byte
+
 func InitAPI(members *[]domain.Member) {
 	r := gin.Default()
-	h := `{{ define "index.tmpl" }}
-	<html lang="jp">
-	<head>
-	<meta charset="UTF-8">
-	<title>kono-lab</title>
-	</head>
-	<body>
-	<h2> 在学者 </h2>
-	{{ range .}}
-	{{ if .IsLab}}
-	<li>{{ .Name }} </li>
-	{{ end }}
-	{{ end }}
-
-	<h2>帰宅者</h2>
-
-	{{ range .}}
-	{{ if eq .IsLab  false}}
-	<li>{{ .Name }} </li>
-	{{ end }}
-	{{ end }}
-
-	</body>
-	</html>
-	{{end}}`
-
+	h := string(HTML)
 	r.GET("/", func(c *gin.Context) {
 		limit := 30
 		for i := 0; i < len(*members); i++ {

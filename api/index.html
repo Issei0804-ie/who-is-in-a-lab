@@ -1,0 +1,27 @@
+{{ define "index.tmpl" }}
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <title>kono-lab</title>
+</head>
+<body>
+<div style="text-align: center">
+    <h2> 在学者 </h2>
+    {{ range .}}
+    {{ if .IsLab}}
+    <li>{{ .Name }} </li>
+    {{ end }}
+    {{ end }}
+
+    <h2>帰宅者</h2>
+
+    {{ range .}}
+    {{ if eq .IsLab  false}}
+    <li>{{ .Name }} </li>
+    {{ end }}
+    {{ end }}
+</div>
+
+</body>
+</html>
+{{end}}
