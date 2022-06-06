@@ -32,6 +32,21 @@ func InitAPI(members *[]domain.Member) {
 		}
 	})
 
+	r.GET("/active", func(c *gin.Context) {
+		limit := 30
+		var activeMember []string
+		for i := 0; i < len(*members); i++ {
+			(*members)[i].SetIsLab(limit)
+			if (*members)[i].IsLab {
+				activeMember = append(activeMember, (*members)[i].Name)
+			}
+		}
+
+		c.JSON(200, map[string]string{
+			"在室者": fmt.Sprintf("%v", activeMember),
+		})
+	})
+
 	r.POST("/register", func(c *gin.Context) {
 
 		newMember := domain.Member{}
