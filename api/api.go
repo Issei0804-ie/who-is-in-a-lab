@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Issei0804-ie/who-is-in-a-lab/domain"
+	"github.com/Issei0804-ie/who-is-in-a-lab/util"
 	"github.com/gin-gonic/gin"
 	"html/template"
 	"log"
@@ -63,6 +64,13 @@ func InitAPI(members *[]domain.Member) {
 		if newMember.Name == "" || newMember.Addresses == nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest, map[string]string{"message": "invalid body. check parameter."})
 			return
+		}
+
+		for _, macAddress := range newMember.Addresses {
+			if !util.ValidateMacAddress(macAddress) {
+				c.JSON(http.StatusBadRequest, map[string]string{"message": "invalid mac address."})
+				return
+			}
 		}
 
 		// 送られてきた mac address が既に登録されていないか確認
